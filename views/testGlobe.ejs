@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>WorldWindJS Example</title>
+
+    <!-- Bootstrap 4.0 CSS compiled and minified -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Font Awesome icons (see: https://fontawesome.com/icons?d=gallery) -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+
+
+    <!-- JavaScript is placed at the end of the document so the page loads faster -->
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/worldwindjs@1.5.90/build/dist/worldwind.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
+
+    <script data-main="../scripts/globeJ.js" src="../scripts/require-2.3.5.min.js"></script>
+    <style>
+        body {
+            /*Account for the height of the navbar component*/
+            padding-top: 3.5rem;
+        }
+
+        /*Sets the size and style of the globe container*/
+
+        .globe {
+            width: 100%;
+            height: calc(100vh - 3.5rem);
+            background-color: black;
+        }
+
+        /*Sets the position of a container displayed over the globe container*/
+
+        .globe-overlay {
+            position: absolute;
+            width: 100%;
+            top: 3.5rem;
+        }
+
+        /*Sets the background color of Cards displayed over the globe */
+        .globe-card {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        /*When the modal fills the screen it has no margin on top and bottom*/
+
+        /*Centers the modal*/
+
+        .modal-dialog {
+            margin: 0 auto;
+        }
+
+        /*Sets the maximum height of the entire modal to 100% of the screen height*/
+
+        .modal-content {
+            max-height: 100vh;
+        }
+
+        /*Sets the maximum height of the modal body to 90% of the screen height*/
+
+        .modal-body {
+            max-height: 90vh;
+            overflow-y: scroll;
+        }
+
+        /*Sets the height of a modal's canvas to 30% or 200px*/
+
+        .modal-body-canvas {
+            max-height: 200px;
+            height: 30vh;
+        }
+
+        /*Sets the height of a modal's canvas to 60% minus the height of a footer*/
+
+        .modal-body-table {
+            max-height: calc(60vh - 71px);
+            overflow-y: auto;
+        }
+
+        /* Prevents an element, like a <div/> from consuming user input */
+
+        .noninteractive {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            pointer-events: none;
+        }
+
+        /* Allows an element to receive user input */
+
+        /* Useful if a parent element is using .noniteractive */
+
+        .interactive {
+            -webkit-touch-callout: auto !important;
+            -webkit-user-select: auto !important;
+            -khtml-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            -o-user-select: auto !important;
+            pointer-events: auto !important;
+        }
+
+        .split {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .split.split-horizontal {
+            height: 100%;
+            float: left;
+        }
+
+        .note {
+            color: #959595;
+            font-size: 14px;
+        }
+
+        .box1 {
+            margin-left: 100px;
+            position: absolute;
+            width: 500px;
+            height: 900px;
+        }
+
+        .button1 {
+            width: 300px;
+            height: 70px;
+            border-radius: 30px;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            background-color: white;
+            color: #337ab7;
+            border: 1px solid #337ab7;
+            font-size: 18px;
+            margin-left: 25px;
+        }
+
+        .button1:hover {
+            background-color: #337ab7;
+            color: white;
+        }
+
+        #edit {
+            display: block;
+            width: 200px;
+            height: 50px;
+            padding: 10px;
+            margin: auto;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            border-radius: 5px;
+            border-color: #31a0ba;
+            color: #31a0ba;
+            background-color: transparent;
+        }
+
+        #edit:hover {
+            background-color: #31a0ba;
+            color: white;
+        }
+
+        #valSubmit {
+            display: none;
+            float: left;
+            width: 150px;
+            height: 50px;
+            padding: 10px;
+            margin-bottom: 15px;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            border-radius: 5px;
+            background-color: #a6d187;
+            border-color: #a6d187;
+            color: white;
+        }
+
+        #valSubmit:hover {
+            background-color: white;
+            color: #a6d187;
+        }
+
+        #cancel {
+            display: none;
+            float: right;
+            width: 80px;
+            height: 50px;
+            padding: 10px;
+            margin-bottom: 15px;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            border-radius: 5px;
+            background-color: #cdcdcd;
+            color: white;
+        }
+
+        #cancel:hover {
+            background-color: white;
+            color: #cdcdcd;
+        }
+
+        #layerMenu {
+            padding: 15px;
+            background-color: #e5e5e5;
+        }
+
+        #layerMenu::-webkit-scrollbar-thumb {
+            border-radius: 30px;
+            width: 5px;
+            background-color: rgba(0, 0, 0, .5);
+            -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+        }
+
+        #layerMenu::-webkit-scrollbar {
+            -webkit-appearance: none;
+            width: 7px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 17px;
+            top: 10px;
+        }
+
+        .switch input {display:none;}
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #2196F3;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 13px;
+            width: 13px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(13px);
+            -ms-transform: translateX(13px);
+            transform: translateX(13px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 17px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .banner{
+            position:absolute;
+            top: 0;
+            left: 0;
+            text-align:center;
+            display:inline-block;
+        }
+
+        .sortButton {
+            background-color: rgb(128, 128, 128);
+            color: white;
+            border-radius: 25%;
+            float: right;
+            outline: none;
+            font-size: 12px;
+        }
+
+        .sortButton:hover {
+            background-color: rgb(0, 128, 255);
+        }
+
+        #manualSwitch {
+            display: none;
+        }
+
+        #layerMenu::-webkit-scrollbar-corner  {
+            display: block;
+        }
+        #slider-range { margin: 10px; }
+        #amount {
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+
+    <!--Branding icon and text-->
+    <a href="http://aworldbridge.com" style="background: #000000;
+    width: 336px;
+    height: 30px;">
+        <img class="banner d-inline-block align-top" src="../images/NewWBBanner.jpg" style="width: 350px;
+    height: 55px;
+    display: block;" />
+    </a>
+
+    <!--Hamburger menu displayed on small screens/windows-->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!--Main menu content-->
+    <div class="collapse navbar-collapse" id="main-menu">
+        <ul class="navbar-nav mr-auto" >
+            <!--Layers-->
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#layers" role="button">
+                    <span class="fas fa-list" aria-hidden="true"></span>
+                    <span class="d-md-none d-lg-inline" aria-hidden="true">Layers</span>
+                </a>
+            </li>
+            <!--Markers-->
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#markers" role="button">
+                    <span class="fas fa-map-marker-alt" aria-hidden="true"></span>
+                    <span class="d-md-none d-lg-inline" aria-hidden="true">Markers</span>
+                </a>
+            </li>
+            <!--Settings-->
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#settings" role="button">
+                    <span class="fas fa-cog" aria-hidden="true"></span>
+                    <span class="d-md-none d-lg-inline" aria-hidden="true">Settings</span>
+                </a>
+            </li>
+            <!--Globe Settings-->
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#globeSettings" role="button">
+                    <span class="fas fa-globe" aria-hidden="true"></span>
+                    <span class="d-md-none d-lg-inline" aria-hidden="true">Globe Settings</span>
+                </a>
+            </li>
+        </ul>
+        <!--Search Box-->
+        <div class="form-inline">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" data-toggle="modal" data-target="#preview-dialog">
+                <span class="fas fa-search" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+</nav>
+<!-- Use container-fluid for 100% width and set padding to 0 -->
+<main role="main" class="container-fluid p-0">
+    <!-- Globe -->
+    <div id="globe" class="globe">
+        <!--.d-block ensures the size is correct (prevents a scrollbar from appearing)-->
+        <canvas id="globe-canvas" class="d-block" style="width: 100%; height: 100%;
+                        background-color: rgb(36,74,101);">
+            Try Chrome or FireFox.
+        </canvas>
+    </div>
+
+    <!--Panels-->
+    <div class="globe-overlay noninteractive w-100">
+        <div class="card-columns">
+            <!--Globe Functions-->
+            <div class="collapse" id="functionsG">
+                <div class="split split-horizontal tab-content">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <span class="fas fa-list" aria-hidden="true"></span> Layers
+                            <button id="collapse-left-sidebar" type="button" class="close pull-right" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button></h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group" data-bind="template: { name: 'layer-list-template', foreach: overlayLayers}"></div>
+                        <hr/>
+                        <div class="list-group" data-bind="template: { name: 'layer-list-template', foreach: baseLayers}"></div>
+                    </div>
+                </div>
+            </div>
+            <!--Layers-->
+            <div class="collapse" id="layers">
+                <div class="card globe-card interactive">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <span class="fas fa-list" aria-hidden="true"></span> Layers
+                            <button type="button" class="close pull-right" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button></h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group" data-bind="template: { name: 'layer-list-template', foreach: overlayLayers}"></div>
+                        <hr/>
+                        <div class="list-group" data-bind="template: { name: 'layer-list-template', foreach: baseLayers}"></div>
+                    </div>
+                </div>
+            </div>
+            <!--Markers-->
+            <div class="collapse" id="markers">
+                <div class="card globe-card interactive">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <span class="fas fa-map-marker-alt" aria-hidden="true"></span> Markers
+                            <button type="button" class="close pull-right" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button></h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Marker list goes here.</p>
+                    </div>
+                </div>
+            </div>
+            <!--Settings-->
+            <div class="collapse" id="settings">
+                <div class="card globe-card interactive">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <span class="fas fa-cog" aria-hidden="true"></span> Settings
+                            <button type="button" class="close pull-right" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button></h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group" data-bind="template: { name: 'layer-list-template', foreach: settingLayers}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapse" id="globeSettings">
+                <div class="card globe-card interactive">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <span class="fas fa-globe" aria-hidden="true"></span> Globe Settings
+                            <button type="button" class="close pull-right" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button></h5>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="note text-center" id="switchNote">NOTE: Toggled switch to temporarily view point locations.</h5>
+                        <div class="text-center" style="margin-left: -25px">
+                            Manual Layer Switch
+                            <label class="switch">
+                                <input type="checkbox" id="switchMethod" checked>
+                                <span class="slider round"></span>
+                            </label>
+                            Auto Layer Switch
+                        </div>
+                        <div id="manualSwitch" class="text-center">
+                            Density Heatmap
+                            <label class="switch">
+                                <input type="checkbox" id="switchLayer">
+                                <span class="slider round"></span>
+                            </label>
+                            Point Locations
+                        </div>
+                        <br>
+                        <div style="width: 300px; margin: auto; border-style: solid; padding: 25px; background-color: #f4f4f4">
+                            <div id="buttons">
+                                <div>
+                                    <p id="totalWTCap"></p>
+                                </div>
+                                <div>
+                                    <h4>Smart Search</h4>
+                                    <input id="autoSuggestion" placeholder="Search by Project Name" style="font-size: 15px; width: 235px; height: 50px; border-radius: 5px; border: 1px solid lightgray; padding-left: 10px;">
+                                </div>
+                                <br>
+
+                                <h5 class="note text-center" id="filterNote">NOTE: Placemark colors are determined by the filter chosen.</h5>
+                                <div id="placemarkButton" style="pointer-events: none;">
+                                    <input type="radio" id="none" name="category"> None
+                                    <input type="radio" id="p_year_color" name="category"> Year
+                                    <input type="radio" id="p_avgcap_color" name="category" checked> Capacity
+                                    <input type="radio" id="t_ttlh_color" name="category"> Height
+                                    <br><br>
+
+                                    <div style="width: 240px; height: 15px; background: linear-gradient(to right, rgba(0, 0, 255, 0.75), rgba(0, 255, 0, 0.75), rgba(255, 255, 0, 0.75), rgba(255, 127.5, 0, 0.75), rgba(255, 0, 0, 0.75));"></div>
+                                    <div style="width: 240px; height: 30px;">
+                                        <p id="leftScale" style="margin-top: 5px; float: left; font-size:13px;"></p>
+                                        <p id="rightScale" style="margin-top: 5px; float: right; font-size:13px;"></p>
+
+
+
+                                    </div>
+                                    <br>
+                                    <div id="editContainer" style="display: none;">
+                                        <p id="p1" style="display: none"><strong>Range: </strong><input id="amountY" type="text" style="margin-top: 5px; font-size:13px; display: none;" readonly> </p>
+                                        <div id="sliderYear" style="display: none"></div>
+                                        <p id="p2" style="display: none"><strong>Range: </strong><input id="amountC" type="text" class="floating-Box" style="margin-top: 5px; font-size:13px; display: none;" readonly></p>
+                                        <div id="sliderCap" style="display: none"></div>
+                                        <p id="p3" style="display: none"><strong>Range: </strong><input id="amountH" type="text" class="floating-Box" style="margin-top: 5px; font-size:13px; display: none;" readonly></p>
+                                        <div id="sliderHeight" style="display: none"></div>
+
+                                        <br>
+                                        <button id="valSubmit">Submit</button>
+                                        <button id="cancel">Cancel</button>
+                                        <br>
+                                    </div>
+                                    <button id="edit">Enable Editing</button>
+
+                                    <h5 class="note text-center" id="menuNote" style="margin-top: 10px">NOTE: Zoom in to an eye distance of less than 1,500 km to display a menu for wind turbines.</h5>
+
+                                    <!--<div>-->
+                                    <!--<h4>Smart Search</h4>-->
+                                    <!--<input id="autoSuggestion" placeholder="Search by Project Name" style="font-size: 15px; width: 235px">-->
+                                    <!--</div>-->
+                                    <!--<br><br>-->
+                                </div>
+
+
+
+                                <!--<button type="button" id="test"></button>-->
+
+                                <div id="layerMenuButton" style="width: 240px; height: 50px; overflow: scroll;" hidden>
+                                    <p style="float: left;"><strong><span id="projectNumber"></span></strong> Projects</p>
+                                    <button data-status="false" id="capacity" class="sortButton">Cap.<span></span></button>
+                                    <button data-status="false" id="year" class="sortButton">Year<span></span></button>
+                                    <button data-status="true" id="name" class="sortButton" style="background-color: rgb(0, 128, 255)">Name<span> &#9650;</span></button>
+                                </div>
+                                <div id="layerMenu" style="width: 240px; height: 450px; overflow: scroll;">
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--Layer List Template-->
+    <script type="text/html" id="layer-list-template">
+        <button type="button" class="list-group-item list-group-item-action" data-bind="click: $root.toggleLayer, css: { active: $data.enabled }">
+            <span data-bind="text: $data.displayName"></span>
+        </button>
+    </script>
+
+    <!--Search Preview Dialog-->
+    <div id="preview">
+        <div id="preview-dialog" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Search Results</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Search result go here
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Go to</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</main>
+
+</body>
+
+</html>

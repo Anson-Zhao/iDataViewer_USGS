@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Datatable</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/buttons/1.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!--<link rel="stylesheet" href="//unpkg.com/flatpickr/dist/flatpickr.min.css">-->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<style>
+    #Request,#User{
+        background-color: #2980B9 ;
+        height:55px;
+        border-radius: 4px;
+        color: whitesmoke;
+        margin-top:50px;
+    }
+    table{
+        height:550px;
+        overflow-x: auto;
+        overflow-y: auto;
+        display: block;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+    }
+    table, th, td{
+        border: 1px solid #cdcdcd;
+        text-align:center;
+    }
+    table th, table td{
+        padding: 10px;
+        text-align: left;
+    }
+    .gray{
+        background-color: #D0D3D4 ;
+    }
+</style>
+<body>
+<button id="User" style="margin-left:375px;">User Management</button>
+<button id="Request" style="margin-left:275px;">Request Management</button>
+<!-- pending table  //edit //delete -->
+<div id="dvData"  style="width:80%; margin-left:100px; margin-top:50px;">
+    <table id="dataDisplay">
+        <thead>
+        <tr>
+            <th>UID</th>
+            <th>RID</th>
+            <th>Layer Type</th>
+            <th>Country Name</th>
+            <th>City Name</th>
+            <th>State Name</th>
+            <th>Layer Category</th>
+            <th>--SecondLayer---</th>
+            <th>Layer Name</th>
+            <th>Layer Description</th>
+            <th>Layer Uploader</th>
+            <th>Layer Uploader Name</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>UID</th>
+            <th>RID</th>
+            <th>Layer Type</th>
+            <th>Country Name</th>
+            <th>City Name</th>
+            <th>State Name</th>
+            <th>Layer Category</th>
+            <th>--SecondLayer---</th>
+            <th>Layer Name</th>
+            <th>Layer Description</th>
+            <th>Layer Uploader</th>
+            <th>Layer Uploader Name</th>
+            <th>Status</th>
+        </tr>
+        </tfoot>
+    </table>
+    <!-- formal table //approve //recovery-->
+    <button id="approve" class="btn btn-primary btn-sm" value=" Approve ">Approve</button>
+    <button id="delete" class="btn btn-primary btn-sm" value=" Recover ">Delete</button>
+</div>
+<script>
+    var table = $("#dataDisplay").DataTable();
+    var scoutingRowSelected,trapRowSelected;
+    var scoutingTransactionID = [];
+    var trapTransactionID = [];
+    $(document).ready(function () {
+
+        $(function () {
+            flatpickr(".date", {
+                dateFormat: "Y-m-d",
+                time_24hr: true
+            });
+            // if (UserRole === "Admin") {
+            //     DropMenu = "<li><a href=\"/userprofile\">Profile</a></li>\n" +
+            //         "\t\t\t<li><a href=\"/userManagement\">User Management</a></li>\n" +
+            //         "\t\t\t<li><a href=\"/signout\">Sign Out</a></li>";
+            //     $("#userMenu").empty();
+            //     $("#userMenu").append(DropMenu)
+            // } else if ( UserRole === "Regular") {
+            //     DropMenu = "<li><a href=\"/userprofile\">Profile</a></li>\n" +
+            //         "\t\t\t<li><a href=\"/signout\">Sign Out</a></li>";
+            //     $("#userMenu").empty();
+            //     $("#userMenu").append(DropMenu)
+            // }
+            table.clear();
+            table.draw();
+            queryAndDisplay();
+        });
+
+        $('#dataDisplay tbody').on('click', 'tr', function () {
+            $(':button').prop('disabled', false);
+
+            scoutingTransactionID = [];
+
+            $(this).toggleClass('selected');   //toggle class for the rows selected
+
+            scoutingRowSelected = table.rows('.selected').data();    //Store all the data for selected rows'
+            // $('#dataDisplay > thead > tr > th').each(function () {
+            //     thArray.push($(this).text())
+            // })
+
+            for (var i = 0; i < scoutingRowSelected.length; i++) {
+                //            console.log("rowSelected[" + i + "][0]: " + rowSelected[i][0]);
+                scoutingTransactionID.push(scoutingRowSelected[i][0]);
+            }
+        });
+
+        $("#Profile").on("click",function () {
+            location.replace('../views/userprofile1.html');
+        });
+
+        $("#approve").on("click", function () {
+            if (confirm("Are you sure you would like to approve this row(s)?") === true) {
+                var approveIDStr = "approveIDStr=" + scoutingTransactionID.concat(trapTransactionID).toString();
+                console.log ("transactionIDStr: " + approveIDStr);
+                $.ajax({
+                    url:'http://localhost:9090/approve',
+                    type:"GET",
+                    dataType:'json',
+                    data:approveIDStr
+                });
+                window.location.reload();
+            } else {
+                return false;
+            }
+        });
+
+        $("#deleteButton").on("click", function () {
+            if (confirm("Are you sure you would like to delete this row(s)?") === true) {
+                var transactionIDStr = "transactionIDStr=" + scoutingTransactionID.concat(trapTransactionID).toString();
+                console.log ("transactionIDStr: " + transactionIDStr);
+                $.ajax({
+                    url:'http://localhost:9091/deleteData',
+                    type:"GET",
+                    dataType:'json',
+                    data:transactionIDStr
+                });
+                window.location.reload();
+            } else {
+                return false;
+            }
+        });
+
+        var queryAndDisplay = function () {
+            $.ajax({
+                url: 'http://localhost:9090/AddData',
+                dataType: 'json',
+                success: function (results) {
+                    // console.log(results);
+                    for (var i = 0; i < results.length; i++) {
+                        if (results[i].Status === "Active") {
+                            table.row.add([
+                                results[i].UID,
+                                results[i].RID,
+                                results[i].LayerType,
+                                results[i].CountryName,
+                                results[i].CityName,
+                                results[i].StateName,
+                                results[i].FirstLayer,
+                                results[i].SecondLayer,
+                                results[i].ThirdLayer,
+                                results[i].Layer_Description,
+                                results[i].Layer_Uploader,
+                                results[i].Layer_Uploader_name,
+                                results[i].Status
+                            ]).draw(false);
+                        }else{
+                            table.row.add([
+                            results[i].UID,
+                                results[i].RID,
+                                results[i].LayerType,
+                                results[i].CountryName,
+                                results[i].CityName,
+                                results[i].StateName,
+                                results[i].FirstLayer,
+                                results[i].SecondLayer,
+                                results[i].ThirdLayer,
+                                results[i].Layer_Description,
+                                results[i].Layer_Uploader,
+                                results[i].Layer_Uploader_name,
+                                results[i].Status
+                            ]).draw(false);
+                        }
+                    }
+                }
+            });
+        };
+    });
+
+</script>
+</body>
+</html>

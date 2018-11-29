@@ -1,0 +1,540 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>WMS Layer Customized Request</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="../css/style_final.css" type="text/css">
+    <link rel="stylesheet" href="../css/multi-select.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../jquery-validation-1.17.0/demo/css/screen.css">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/file-uploader/5.15.5/fine-uploader-gallery.css" rel="stylesheet">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/file-uploader/5.16.2/all.fine-uploader/all.fine-uploader.min.js"></script>
+    <script type = "text/javascript" src="LayerNameSearch.js"></script>
+    <script src="../src/jquery.multi-select.js"></script>
+    <!--<script src="../src/jquery.form.min.js"></script>-->
+    <!-- Change the "src" attribute according to your installation path -->
+    <!--<script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+    <!--<script src="../jquery-validation-1.17.0/dist/jquery.validate.js"></script>-->
+    <!--<script src="http://malsup.github.com/jquery.form.js"></script>-->
+
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>-->
+    <!--<script src="fineUploader_copy/fine-uploader/fine-uploader.js"></script>-->
+    <!--<script src="fineUploader_copy/fine-uploader/jquery.fine-uploader.js"></script>-->
+
+    <!--<link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/buttons/1.4.2/css/buttons.dataTables.min.css">-->
+    <!--<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">-->
+    <!--<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">-->
+    <!--<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>-->
+    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+    <!--<link rel="stylesheet" href="//unpkg.com/flatpickr/dist/flatpickr.min.css">-->
+    <!--<link rel="stylesheet" href="//unpkg.com/flatpickr@4.1.1/dist/flatpickr.min.css">-->
+    <!--<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBX94wEDdQ52lCDhKAhcfR-flIw1NyLTMA"></script>-->
+    <!--<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+    <!--<script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>-->
+    <!--<script src="//cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>-->
+    <!--<script src="//cdn.jsdelivr.net/npm/flatpickr"></script>-->
+    <!--<script src="//unpkg.com/flatpickr@4.1.1/dist/flatpickr.js"></script>-->
+
+    <script type="text/template" id="qq-template">
+        <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
+            <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
+                <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
+            </div>
+            <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+                <span class="qq-upload-drop-area-text-selector"></span>
+            </div>
+            <div class="qq-upload-button-selector qq-upload-button">
+                <div>Upload a file</div>
+            </div>
+            <span class="qq-drop-processing-selector qq-drop-processing">
+                            <span>Processing dropped files...</span>
+                            <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+                        </span>
+            <ul class="qq-upload-list-selector qq-upload-list" role="region" aria-live="polite" aria-relevant="additions removals">
+                <li>
+                    <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
+                    <div class="qq-progress-bar-container-selector qq-progress-bar-container">
+                        <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
+                    </div>
+                    <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                    <div class="qq-thumbnail-wrapper">
+                        <img class="qq-thumbnail-selector" qq-max-size="120" qq-server-scale>
+                    </div>
+                    <button type="button" class="qq-upload-cancel-selector qq-upload-cancel">X</button>
+                    <button type="button" class="qq-upload-retry-selector qq-upload-retry">
+                        <span class="qq-btn qq-retry-icon" aria-label="Retry"></span>
+                        Retry
+                    </button>
+
+                    <div class="qq-file-info">
+                        <div class="qq-file-name">
+                            <span class="qq-upload-file-selector qq-upload-file"></span>
+                            <span class="qq-edit-filename-icon-selector qq-btn qq-edit-filename-icon" aria-label="Edit filename"></span>
+                        </div>
+                        <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                        <span class="qq-upload-size-selector qq-upload-size"></span>
+                        <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">
+                            <span class="qq-btn qq-delete-icon" aria-label="Delete"></span>
+                        </button>
+                        <button type="button" class="qq-btn qq-upload-pause-selector qq-upload-pause">
+                            <span class="qq-btn qq-pause-icon" aria-label="Pause"></span>
+                        </button>
+                        <button type="button" class="qq-btn qq-upload-continue-selector qq-upload-continue">
+                            <span class="qq-btn qq-continue-icon" aria-label="Continue"></span>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+
+            <dialog class="qq-alert-dialog-selector">
+                <div class="qq-dialog-message-selector"></div>
+                <div class="qq-dialog-buttons">
+                    <button type="button" class="qq-cancel-button-selector">Close</button>
+                </div>
+            </dialog>
+
+            <dialog class="qq-confirm-dialog-selector">
+                <div class="qq-dialog-message-selector"></div>
+                <div class="qq-dialog-buttons">
+                    <button type="button" class="qq-cancel-button-selector">No</button>
+                    <button type="button" class="qq-ok-button-selector">Yes</button>
+                </div>
+            </dialog>
+
+            <dialog class="qq-prompt-dialog-selector">
+                <div class="qq-dialog-message-selector"></div>
+                <input type="text">
+                <div class="qq-dialog-buttons">
+                    <button type="button" class="qq-cancel-button-selector">Cancel</button>
+                    <button type="button" class="qq-ok-button-selector">Ok</button>
+                </div>
+            </dialog>
+        </div>
+    </script>
+
+
+
+    <style>
+        body      { padding-top:80px; word-wrap:break-word; }
+        /*#hide { display: none; }*/
+        /*.FAW        { display: none; }*/
+        /*#stay, #cancel {  position: relative;  width: 20%;  left: 20%;  }*/
+        /*#leave, #clear {  position: relative;  width: 20%;  left: 60%;  }*/
+        .banner{
+            position:relative;
+            width:100%;
+        }
+
+        #Binfo{
+            margin-bottom:20px;
+            margin-top:-20px;
+        }
+        #Linfo{
+            margin-top:20px;
+            margin-bottom:20px;
+        }
+        .column {
+            float:right;
+            position:relative;
+            right:80px;
+            width:10%;
+            padding:10px 40px;
+        }
+        #clear{
+            background-color: #31a0ba;
+            border-radius:4px;
+            font-size:16px;
+            padding:3px 10px 3px 10px;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            color:white;
+        }
+        #clear:hover {
+            background-color: #ff758f;
+            color: white;
+        }
+        #submit{
+            background-color: #31a0ba;
+            border-radius:4px;
+            font-size:16px;
+            padding:3px 10px 3px 10px;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            color:white;
+        }
+        #submit:hover{
+            background-color: #ff758f;
+            color:white;
+        }
+        #cancel{
+            background-color: #31a0ba;
+            border-radius:4px;
+            font-size:16px;
+            padding:3px 10px 3px 10px;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            color:white;
+            margin-left:385px;
+            margin-top: 10px;
+        }
+        #cancel:hover{
+            background-color: #ff758f;
+            color:white;
+        }
+    </style>
+
+</head>
+<body>
+
+<!-- Fine Uploader DOM Element
+====================================================================== -->
+<!--<div id="fine-uploader"></div>-->
+
+<!-- Your code to create an instance of Fine Uploader and bind to the DOM/template
+====================================================================== -->
+<!--<script>-->
+    <!--$('#fine-uploader').fineUploader({-->
+        <!--template: 'qq-template',-->
+        <!--request: {-->
+            <!--endpoint: 'http://localhost:9090/upload'-->
+        <!--},-->
+        <!--thumbnails: {-->
+            <!--placeholders: {-->
+                <!--waitingPath: '/source/placeholders/waiting-generic.png',-->
+                <!--notAvailablePath: '/source/placeholders/not_available-generic.png'-->
+            <!--}-->
+        <!--},-->
+        <!--validation: {-->
+            <!--allowedExtensions: ['jpeg', 'jpg', 'txt'],-->
+            <!--itemLimit: 3,-->
+            <!--sizeLimit: 51200 // 50 kB = 50 * 1024 bytes-->
+        <!--}-->
+    <!--});-->
+
+<div class="container">
+    <a href="//aworldbridge.com"><img class="banner" src="/NewWBBanner.jpg"/></a>
+    <!--<div id="modal" class="modal">-->
+        <!--&lt;!&ndash; Modal content &ndash;&gt;-->
+        <!--<div id="modal-content">-->
+            <!--<div id="modal-header">-->
+                <!--<span id="close"></span>-->
+                <!--<h2 id="header"></h2>-->
+            <!--</div>-->
+            <!--<div id="modal-body">-->
+                <!--<p id="body"></p>-->
+            <!--</div>-->
+            <!--<div id="modal-footer">-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <h1 id="title">General Form</h1>
+    <div id="container">
+
+        <h2 id="Binfo">Basic Info</h2>
+        <div style="display: block;" class="generalForm">
+            <form class="well form-horizontal" id="basic" >
+                <fieldset>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Full Name</label>
+                        <div class="col-md-8 inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span><input id="fullName" name="fullName" placeholder="Full Name" class="form-control" required value="" type="text"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Address Line 1</label>
+                        <div class="col-md-8 inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span><input id="addressLine1" name="Address_Line1" placeholder="Address Line 1" class="form-control" required value="" type="text"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Address Line 2</label>
+                        <div class="col-md-8 inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span><input id="addressLine2" name="Address_Line2" placeholder="Address Line 2" class="form-control" value="" type="text"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">City</label>
+                        <div class="col-md-8 inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span><input id="city" name="City" placeholder="City" class="form-control" required value="" type="text"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">State/Province/Region</label>
+                        <div class="col-md-8 inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span><input id="state" name="State_Province_Region" placeholder="State/Province/Region" class="form-control" required value="" type="text"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Postal Code/ZIP</label>
+                        <div class="col-md-8 inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span><input id="postcode" name="PostalCode_ZIP" placeholder="Postal Code/ZIP" class="form-control" required value="" type="text"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Country</label>
+                        <div class="col-md-8 inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span><input id="country" name="Country" placeholder="Country" class="form-control" required value="" type="text"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Email</label>
+                        <div class="col-md-8 inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span><input id="email" name="Email" placeholder="Email" class="form-control" required value="" type="email"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Phone Number</label>
+                        <div class="col-md-8 inputGroupContainer">
+                            <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span><input id="phoneNumber" name="Phone_Number" placeholder="Phone Number" class="form-control" required value="" type="text"></div>
+                        </div>
+                    </div>
+
+
+                </fieldset>
+            </form>
+        </div>
+            <h2 id="Linfo">Layer Info</h2>
+        <div  class="generalForm">
+            <form class="well form-horizontal" id="layer">
+                <fieldset >
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Layer Name</label>
+                            <div class="col-md-8 inputGroupContainer">
+                                <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                                    <input id="LayerNameInput" name="Layer_Name" placeholder="Layer Name" class="form-control" required value="" type="text" onchange="SearchLayerName(this.value)"></div>
+                            </div>
+                        </div>
+                        <p id="LayerName1" style="color: palevioletred; margin-left:270px;">Please Enter the Layer Name, the Layer Name must be at least 6 characters</p>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Layer Category</label>
+                            <div class="col-md-8 inputGroupContainer">
+                                <div class="input-group">
+                                    <span class="input-group-addon" style="max-width: 100%;"><i class="glyphicon glyphicon-list"></i></span>
+                                    <select required class="selectpicker form-control" id="select" name="Layer_Category">
+                                        <option value="">SELECT LAYER TYPE</option>
+                                        <option>Energy</option>
+                                        <option>Water</option>
+                                        <option>Agriculture</option>
+                                        <option>Transportation</option>
+                                        <option>Economics</option>
+                                        <option>Health Services</option>
+                                        <option>Risk Management</option>
+                                        <option>Education</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Layer Description</label>
+                            <textarea class="form-control" id="message" name="Layer_Description" placeholder="Enter your description here..." required maxlength="140" rows="7"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-md-4 control-label">Layer Uploader</label>
+                            <div class="col-md-8 inputGroupContainer">
+                                <div id="uploader"></div>
+                            </div>
+                        </div>
+                    <div class="column">
+
+                    </div>
+
+                    </fieldset>
+                </form>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <button id="submit" type="submit" value="Submit" form = "basic" form ="layer" >Submit</button>
+                </div>
+                <div class="column">
+                    <button id="clear" type="reset" onclick="clearForm()" value="  Clear  ">Clear</button>
+                </div>
+                <div class="colum">
+                    <button id="cancel" type="button" onclick="goback()" value=" Cancel ">Cancel</button>
+                </div>
+            </div>
+
+    </div>
+
+        <script>
+
+            var getvalue = JSON.parse(localStorage.getItem("getvalue"));
+            // console.log(getvalue);
+            document.getElementById('fullName').value = getvalue[1];
+            document.getElementById('addressLine1').value = getvalue[2];
+            document.getElementById('addressLine2').value = getvalue[3];
+            document.getElementById('city').value = getvalue[4];
+            document.getElementById('state').value = getvalue[5];
+            document.getElementById('postcode').value = getvalue[6];
+            document.getElementById('country').value = getvalue[7];
+            document.getElementById('email').value = getvalue[8];
+            document.getElementById('phoneNumber').value = getvalue[9];
+            document.getElementById('LayerNameInput').value = getvalue[10];
+            document.getElementById('select').value = getvalue[11];
+            document.getElementById('message').value = getvalue[12];
+
+            var photoDiv = $("#photo");
+                photoDiv.empty();
+                var editIDSr = "editIDSr=" + getvalue[0];
+                console.log(editIDSr);
+                $.ajax({
+                    url: 'http://localhost:9090/edit',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: editIDSr,
+                    success: function (results) {
+                        if (!results.error) {
+                            globalResults = results;
+                            console.log("results: " + globalResults[0].Layer_Uploader);
+
+                            var list = [];
+                            for (var i = 0; i < globalResults.length; i++) {
+                                var first = {
+                                    id: i,
+                                    size: 561276,
+                                    thumbnailUrl: globalResults[i].Layer_Uploader,
+                                    name: globalResults[i].Layer_Uploader_name
+                                };
+
+                                list.push(first);
+                            }
+                            // console.log("afwefwe: " + qq.supportedFeatures.imagePreviews === true);
+                            console.log("json object array: " + list[0].thumbnailUrl);
+
+                            uploaderPest.addInitialFiles(list);
+                        } else {
+                            console.log("didn't work :(");
+                        }
+                    }
+                });
+
+                var uploaderPest = new qq.FineUploader({
+                    element: document.getElementById("uploader"),
+                    // debug: true,
+                    request: {
+                        endpoint: 'http://localhost:9090/upload'
+                    },
+                    cors: {
+                        //all requests are expected to be cross-domain requests
+                        expected: true
+
+                        // //if you want cookies to be sent along with the request
+                        // sendCredentials: true
+                    },
+                    deleteFile: {
+                        enabled: true, // defaults to false
+                        endpoint: 'http://localhost:9090/deleteFiles/:uuid'
+                    },
+                    callbacks: {
+                        onComplete: function (id, name, responseJSON) {
+                            console.log(responseJSON.newuuid);
+                            console.log(id + "      " + name);
+                            uploader.setUuid(id, responseJSON.newuuid);
+                            // $.ajax({
+                            //     url: '/submit',
+                            //     type: 'POST',
+                            //     dataType: 'json',
+                            //     async: false,
+                            //     success: function (product) {
+                            //         if (!product.error) {
+                            //             globalPaths = product;
+                            //             console.log("results: " + globalPaths[0].Damage_photo);
+                            //         } else {
+                            //             console.log("you're gonna have a bad time");
+                            //         }
+                            //     }
+                            // })
+                        }
+                    }
+                });
+
+            // $("#submit").on("click", function(){
+            //
+            //     var data = $("#basic").serialize() + "&" + $("#layer").serialize();
+            //     console.log($("#basic").serialize());
+            //     $.ajax({
+            //         url  : 'http://localhost:9086/submit',
+            //         method : "post",
+            //         data : data,
+            //         dataType: 'json',
+            //         success : function(d){
+            //             console.log(d);
+            //         }
+            //     });
+            // });
+
+            function clearForm(){
+                if (confirm("Are you sure to clear this page? All the data will be cleared accordingly!") === true) {
+                    document.getElementById("layer").reset();
+                    document.getElementById("basic").reset();
+                }
+            }
+            function goback(){
+                if(confirm("Are you sure to leave this page? All the change will be cleared accordingly!") === true){
+                    window.location.replace("Datatable.html");
+                }
+            }
+
+            // // Wait for the DOM to be ready
+            // $(function(){
+            //     // Initialize form validation on the registration form.
+            //     // It has the name attribute "registration"
+            //     $("form[id='basic' ]").validate({
+            //         // Specify validation rules
+            //         rules: {
+            //             // The key name on the left side is the name attribute
+            //             // of an input field. Validation rules are defined
+            //             // on the right side
+            //             Full_Name: "required",
+            //             Address_Line1: "required",
+            //             City: "required",
+            //             State_Province_Region: "required",
+            //             PostalCode_ZIP: "required",
+            //             Country: "required",
+            //             Email: {
+            //                 required: true,
+            //                 // Specify that email should be validated
+            //                 // by the built-in "email" rule
+            //                 email: true
+            //             },
+            //             Phone_Number: "required"
+            //         },
+            //         // Specify validation error messages
+            //         messages: {
+            //             Full_Name: "Please enter your full name",
+            //             Address_Line1: "Please enter your address",
+            //             City: "Please enter your city",
+            //             State_Province_Region: "Please enter your state/province/state",
+            //             PostalCode_ZIP: "Please enter your postal code/ZIP",
+            //             Country: "Please enter your country",
+            //             Email: "Please enter a valid email address",
+            //             Phone_Number: "Please enter your phone number"
+            //         },
+            //
+            //         invalidHandler: function(event) {
+            //             $(".error").css("color", "red");
+            //         },
+            //
+            //         // Make sure the form is submitted to the destination defined
+            //         // in the "action" attribute of the form when valid
+            //         submitHandler: function (form) {
+            //             form.submit();
+            //         }
+            //     });
+            //
+            // });
+
+        </script>
+    </div>
+</body>
+</html>
