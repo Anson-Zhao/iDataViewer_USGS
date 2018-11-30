@@ -22,7 +22,7 @@ var configGlobal = {
     'Login_table': 'UserLogin',
     'Upload_db': 'USGS',
 
-    'Server_Port': 9085,
+    'Server_Port': 9086,
 
     // 'local_URL' : "",
     // 'local_URL' : "http://viewer.usgs.aworldbridgelabs.com",
@@ -47,7 +47,7 @@ var configGlobal = {
     'eyeDistance_Heatmap': 3500,
 
     // uswtdb initial eye distance (m)
-    'eyeDistance_initial': 20000000,
+    'eyeDistance_initial': 10000000,
 
     'Color_Year': {red: 2010, orange: 2005, yellow: 2000, green: 1990, blue: 1980},
 

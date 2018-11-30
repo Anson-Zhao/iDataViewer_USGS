@@ -1048,14 +1048,15 @@ requirejs([
             }
 
             $.ajax({
-                url: '/testLocations',
+                url: '/uswtdb',
                 type: 'GET',
                 dataType: 'json',
+                // data: data,
                 async: false,
                 success: function (resp) {
                     if (!resp.error) {
-                        console.log(resp.data);
                         var data = [];
+
                         var circle = document.createElement("canvas"),
                             ctx = circle.getContext('2d'),
                             radius = 10,
@@ -1073,8 +1074,10 @@ requirejs([
                         ctx.fill();
 
                         ctx.closePath();
+
                         for (var i = 0; i < resp.data.length; i++) {
-                            data[i] = new WorldWind.MeasuredLocation(resp.data[i].latitude, resp.data[i].longitude, resp.data[i].measure);
+                            // data[i] = new WorldWind.IntensityLocation(resp.data[i].ylat, resp.data[i].xlong, 1);
+                            data[i] = new WorldWind.MeasuredLocation(resp.data[i].ylat, resp.data[i].xlong, 0.8);
 
                             var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
                             placemarkAttributes.imageSource = new WorldWind.ImageSource(circle);
@@ -1083,7 +1086,7 @@ requirejs([
                             var highlightAttributes = new WorldWind.PlacemarkAttributes(placemarkAttributes);
                             highlightAttributes.imageScale = 2.0;
 
-                            var placemarkPosition = new WorldWind.Position(resp.data[i].latitude, resp.data[i].longitude, resp.data[i].measure);
+                            var placemarkPosition = new WorldWind.Position(resp.data[i].ylat, resp.data[i].xlong, 0);
                             placemark[i] = new WorldWind.Placemark(placemarkPosition, false, placemarkAttributes);
                             placemark[i].altitudeMode = WorldWind.RELATIVE_TO_GROUND;
                             placemark[i].highlightAttributes = highlightAttributes;
@@ -1098,27 +1101,24 @@ requirejs([
                             placemark[i].userProperties.p_avgcap_color = resp.data[i].p_avgcap;
                             placemark[i].userProperties.t_ttlh_color = resp.data[i].t_ttlh;
 
-
                             var placemarkLayer = new WorldWind.RenderableLayer(resp.data[i].case_id);
                             globe.wwd.addLayer(placemarkLayer);
                             globe.wwd.layers[globe.wwd.layers.length - 1].addRenderable(placemark[i]);
 
                             if (i === 0 || resp.data[i].p_name !== resp.data[i - 1].p_name) {
-                                autoSuggestion.push({
-                                    "value": resp.data[i].p_name,
-                                    "lati": resp.data[i].latitude,
-                                    "long": resp.data[i].longitude,
-                                    "i": globe.wwd.layers.length - 1
-                                });
+                                autoSuggestion.push({"value": resp.data[i].p_name, "lati": resp.data[i].ylat, "long": resp.data[i].xlong, "i": globe.wwd.layers.length - 1});
+                                // autoSuggestion.push({"value": resp.data[i].p_name, "lati": resp.data[i].ylat, "long": resp.data[i].xlong, "i": [wwd.layers.length - 1]});
                             } else {
                                 autoSuggestion[autoSuggestion.length - 1].i += ('-' + (globe.wwd.layers.length - 1));
+                                // autoSuggestion[autoSuggestion.length - 1].i.push(wwd.layers.length - 1);
                             }
 
                             if (i === resp.data.length - 1) {
-                                // Add new HeatMap Layer with the points as the data source.
-                                var HeatMapLayer2 = new WorldWind.HeatMapLayer("Heatmap", data);
-                                HeatMapLayer2.scale = ['#000000', '#ffffff', '#0ffff0', '#00ff00', '#ffff00', '#ff0000'];
-                                HeatMapLayer2._gradient = {
+
+                                var HeatMapLayer = new WorldWind.HeatMapLayer("Heatmap", data);
+
+                                HeatMapLayer.scale = ['#000000', '#ffffff', '#0ffff0', '#00ff00', '#ffff00', '#ff0000'];
+                                HeatMapLayer._gradient = {
                                     0: "#000000",
                                     0.4: "#ffffff",
                                     0.5: "#0ffff0",
@@ -1126,17 +1126,59 @@ requirejs([
                                     0.9: "#ffff00",
                                     1: "#ff0000"
                                 };
-                                HeatMapLayer2._radius = 8;
-                                HeatMapLayer2._incrementPerIntensity = 1; //The value here should be between 0 and 1 to determine the maximum count
-                                // console.log(HeatMapLayer2);
+                                HeatMapLayer._radius = 8;
+                                HeatMapLayer._incrementPerIntensity = 1;
+                                console.log(HeatMapLayer);
 
-                                globe.wwd.addLayer(HeatMapLayer2);
+                                HeatMapLayer.enabled = false;
+                                globe.wwd.addLayer(HeatMapLayer);
 
-                                globe.wwd.goTo(new WorldWind.Position(37.0902, -95.7129, mainconfig.eyeDistance_initial))
+                                globe.wwd.goTo(new WorldWind.Position(37.0902, -95.7129, mainconfig.eyeDistance_initial));
+                                //console.log(wwd.layers);
+
+
                             }
                         }
                     }
                 }
             });
+
+            $("#autoSuggestion").autocomplete({
+                lookup: autoSuggestion,
+                lookupLimit: 5,
+                onSelect: function(suggestion) {
+                    console.log(suggestion);
+                    $("#autoSuggestion").val("");
+                    clearHighlight(true, true);
+
+                    wwd.goTo(new WorldWind.Position(suggestion.lati, suggestion.long, 50000), function() {
+                        // console.log(wwd.layers[0].eyeText.text.substring(5, wwd.layers[0].eyeText.text.length - 3));
+                        suggestedLayer = suggestion.i;
+                        autoSwitch();
+                        // console.log(wwd.layers[suggestion.i].inCurrentFrame);
+                        // console.log(wwd.layers[wwd.layers.length - 1].inCurrentFrame);
+
+                        setTimeout(function() {
+                            // console.log(wwd.layers[suggestion.i].inCurrentFrame);
+                            // console.log(wwd.layers[wwd.layers.length - 1].inCurrentFrame);
+                            totalWTCap();
+                            layerMenu();
+
+                            console.log(suggestedLayer);
+                            var layerIndex = suggestedLayer.toString().split('-');
+                            console.log(layerIndex);
+                            for (var i = 0; i < layerIndex.length; i++) {
+                                wwd.layers[layerIndex[i]].renderables[0].highlighted = true;
+                            }
+                        }, 1)
+                    });
+                }
+            });
+
+            // $("#p_avgcap_color").click();
+
+            // Listen for mouse moves and highlight the placemarks that the cursor rolls over.
+            globe.wwd.addEventListener("mousemove", handleMouseMove);
+            $("#popover").popover({html: true, placement: "top", trigger: "hover"});
         });
     });
