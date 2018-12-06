@@ -699,7 +699,7 @@ requirejs([
                 function highlight() {
 
                     var layerIndex = id.toString().split('-');
-                    // console.log("C");
+                    console.log("C");
                     for (var i = 0; i < layerIndex.length; i++) {
 
                         globe.wwd.layers[layerIndex[i]].renderables[0].highlighted = !globe.wwd.layers[layerIndex[i]].renderables[0].highlighted;
@@ -910,7 +910,7 @@ requirejs([
                 var totalWT = 0;
                 var totalCap = 0;
 
-                for (var i = layers.length; i < globe.wwd.layers.length - 1; i++) {
+                for (var i = 10; i < globe.wwd.layers.length - 1; i++) {
 
                     if (globe.wwd.layers[i].inCurrentFrame) {
                         totalWT++;
@@ -945,7 +945,7 @@ requirejs([
                     var id;
                     var previousProject;
 
-                    for (var i = layers.length; i < globe.wwd.layers.length - 1; i++) {
+                    for (var i = 10; i < globe.wwd.layers.length - 1; i++) {
 
                         if (globe.wwd.layers[i].inCurrentFrame) {
                             var projectName = globe.wwd.layers[i].renderables[0].userProperties.p_name,
@@ -1019,7 +1019,6 @@ requirejs([
                 var x = o.clientX,
                     y = o.clientY;
                 var pickList = globe.wwd.pick(globe.wwd.canvasCoordinates(x, y));
-                // console.log(pickList.objects);
                 for (var q = 0; q < pickList.objects.length; q++) {
                     var pickedPL = pickList.objects[q].userObject;
                     // console.log(pickedPL);
@@ -1029,22 +1028,22 @@ requirejs([
                         var xOffset = Math.max(document.documentElement.scrollLeft, document.body.scrollLeft);
                         var yOffset = Math.max(document.documentElement.scrollTop, document.body.scrollTop);
 
-                        var popover = document.getElementById('popover');
-                        popover.style.position = "absolute";
-                        popover.style.left = (x + xOffset - 3) + 'px';
-                        popover.style.top = (y + yOffset - 3) + 'px';
+                        // var popover = document.getElementById('popover');
+                        popoverC.css('position', 'absolute');
+                        popoverC.css('left', x + xOffset - 3 + 'px');
+                        popoverC.css('top', y + yOffset - 3 + 'px');
 
                         var content = "<p><strong>Project Name:</strong> " + pickedPL.userProperties.p_name +
                             "<br>" + "<strong>Year Online:</strong> " + pickedPL.userProperties.p_year +
                             "<br>" + "<strong>Rated Capacity:</strong> " + pickedPL.userProperties.p_avgcap +
                             "<br>" + "<strong>Total Height:</strong> " + pickedPL.userProperties.t_ttlh + "</p>";
 
+                        // console.log(content);
+
                         popoverC.attr('data-content', content);
                         popoverC.show();
                     }
                 }
-
-                pickList = [];
             }
 
             $.ajax({
@@ -1168,7 +1167,7 @@ requirejs([
                             var layerIndex = suggestedLayer.toString().split('-');
                             console.log(layerIndex);
                             for (var i = 0; i < layerIndex.length; i++) {
-                                wwd.layers[layerIndex[i]].renderables[0].highlighted = true;
+                                globe.wwd.layers[layerIndex[i]].renderables[0].highlighted = true;
                             }
                         }, 1)
                     });
